@@ -1,7 +1,13 @@
 <header class="header">
   <h1>Мероприятия</h1>
-  <p-button (onClick)="create()">Создать</p-button>
+  <p-button [loading]="isCreating()" (onClick)="create()">Создать</p-button>
 </header>
+
+<div class="line-loader">
+  @if (isListLoading()) {
+    <p-progressbar [style]="{ height: '4px' }" mode="indeterminate" />
+  }
+</div>
 
 <p-table [value]="events()" [tableStyle]="{ 'min-width': '50rem' }">
   <ng-template #header>
@@ -20,10 +26,16 @@
       <td>{{ event.location }}</td>
       <td>{{ event.type === 'music' ? 'Музыкальное' : 'Спортивное' }}</td>
       <td class="buttons">
-        <p-button (onClick)="edit(event)" severity="warn">
+        <p-button
+          [loading]="editingItemId() === event.id"
+          (onClick)="edit(event)"
+          severity="warn">
           Редактировать
         </p-button>
-        <p-button (onClick)="remove(event.id)" severity="danger">
+        <p-button
+          [loading]="removingItemId() === event.id"
+          (onClick)="remove(event.id)"
+          severity="danger">
           Удалить
         </p-button>
       </td>

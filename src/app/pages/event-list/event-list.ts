@@ -3,18 +3,20 @@ import {
   Component,
   DestroyRef,
   inject,
+  signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Button } from 'primeng/button';
+import { ProgressBar } from 'primeng/progressbar';
 import { TableModule } from 'primeng/table';
-import { EMPTY, Observable, switchMap } from 'rxjs';
+import { EMPTY, Observable, switchMap, tap } from 'rxjs';
 import { EventItem, EventItemCreate } from '../../core/models/event/event';
 import { EventRepository } from '../../core/models/event/event-repository';
 import { useOpenEventFormDialog } from '../../features/event-form/use-open-event-form-dialog';
 
 @Component({
   selector: 'evnt-event-list',
-  imports: [TableModule, Button],
+  imports: [TableModule, Button, ProgressBar],
   templateUrl: './event-list.html',
   styleUrl: './event-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,6 +28,10 @@ export class EventList {
   protected events = this.eventsRepository.events;
   protected isListLoading = this.eventsRepository.isLoading;
 
+  protected isCreating = signal(false);
+  protected editingItemId = signal<number | null>(null);
+  protected removingItemId = signal<number | null>(null);
+
   private openEventFormDialog = useOpenEventFormDialog();
 
   create() {
@@ -33,6 +39,7 @@ export class EventList {
       type: 'music',
     })
       .pipe(
+        tap(() => this.isCreating.set(true)),
         switchMap(event => {
           if (event) {
             return this.eventsRepository.createEvent(event);
@@ -41,7 +48,7 @@ export class EventList {
         }),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe();
+      .subscribe(() => this.isCreating.set(false));
   }
 
   edit(event: EventItem) {
@@ -62,6 +69,11 @@ export class EventList {
 
     update$
       ?.pipe(
+        tap(editedEvent => {
+          if (editedEvent) {
+            this.editingItemId.set(event.id);
+          }
+        }),
         switchMap(editedEvent => {
           if (editedEvent) {
             return this.eventsRepository.updateEvent(event.id, editedEvent);
@@ -70,13 +82,14 @@ export class EventList {
         }),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe();
+      .subscribe(() => this.editingItemId.set(null));
   }
 
   remove(id: number) {
+    this.removingItemId.set(id);
     this.eventsRepository
       .deleteEvent(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe();
+      .subscribe(() => this.removingItemId.set(null));
   }
 }

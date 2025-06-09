@@ -16,6 +16,7 @@ export class EventRepository {
 
   events = toSignal(
     this.reloadTrigger$.pipe(
+      tap(() => this.isLoading.set(true)),
       switchMap(() =>
         this.eventHttp.getAllEvents().pipe(tap(() => this.isLoading.set(false)))
       )

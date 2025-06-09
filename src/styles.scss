@@ -1,1 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
+@use './app/styles/reset.scss';
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+  max-width: 1216px;
+  padding: 24px 8px;
+  margin: 0 auto;
+}

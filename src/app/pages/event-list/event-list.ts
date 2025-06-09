@@ -39,9 +39,9 @@ export class EventList {
       type: 'music',
     })
       .pipe(
-        tap(() => this.isCreating.set(true)),
         switchMap(event => {
           if (event) {
+            this.isCreating.set(true);
             return this.eventsRepository.createEvent(event);
           }
           return EMPTY;

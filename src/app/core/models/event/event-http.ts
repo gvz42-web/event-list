@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { delay, of } from 'rxjs';
+import { delay, of, throwError } from 'rxjs';
 import { EventItem, EventItemCreate } from './event';
 import { mockEvents } from './mock-data';
 
@@ -38,5 +38,36 @@ export class EventHttp {
     this.events.push(newEvent);
 
     return of(clone(newEvent)).pipe(delay(mockDelay));
+  }
+
+  updateEvent(id: number, event: EventItemCreate) {
+    const index = this.events.findIndex(item => item.id == id);
+
+    if (index === -1) {
+      return throwError(() => 'Not found');
+    }
+
+    const updatedEvent: EventItem = {
+      ...this.events[index],
+      ...event,
+    };
+
+    this.events[index] = updatedEvent;
+
+    return of(clone(updatedEvent)).pipe(delay(mockDelay));
+  }
+
+  deleteEvent(id: number) {
+    const index = this.events.findIndex(item => item.id == id);
+
+    if (index === -1) {
+      return throwError(() => 'Not found');
+    }
+
+    const targetEvent = this.events[index];
+
+    this.events = this.events.filter(event => event.id !== id);
+
+    return of(clone(targetEvent)).pipe(delay(mockDelay));
   }
 }

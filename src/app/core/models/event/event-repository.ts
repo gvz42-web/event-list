@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Subject, switchMap, tap } from 'rxjs';
+import { EventItemCreate } from './event';
 import { EventHttp } from './event-http';
 
 @Injectable({
@@ -28,5 +29,19 @@ export class EventRepository {
 
   reloadList() {
     this.reloadTrigger$.next();
+  }
+
+  createEvent(event: EventItemCreate) {
+    return this.eventHttp.createEvent(event).pipe(tap(() => this.reloadList()));
+  }
+
+  updateEvent(id: number, event: EventItemCreate) {
+    return this.eventHttp
+      .updateEvent(id, event)
+      .pipe(tap(() => this.reloadList()));
+  }
+
+  deleteEvent(id: number) {
+    return this.eventHttp.deleteEvent(id).pipe(tap(() => this.reloadList()));
   }
 }

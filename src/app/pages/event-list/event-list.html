@@ -1,6 +1,6 @@
 <header class="header">
   <h1>Мероприятия</h1>
-  <p-button>Создать</p-button>
+  <p-button (onClick)="create()">Создать</p-button>
 </header>
 
 <p-table [value]="events()" [tableStyle]="{ 'min-width': '50rem' }">
@@ -10,6 +10,7 @@
       <th>Описание</th>
       <th>Место проведения</th>
       <th>Тип</th>
+      <th>Управление</th>
     </tr>
   </ng-template>
   <ng-template #body let-event>
@@ -18,6 +19,14 @@
       <td>{{ event.description }}</td>
       <td>{{ event.location }}</td>
       <td>{{ event.type === 'music' ? 'Музыкальное' : 'Спортивное' }}</td>
+      <td class="buttons">
+        <p-button (onClick)="edit(event)" severity="warn">
+          Редактировать
+        </p-button>
+        <p-button (onClick)="remove(event.id)" severity="danger">
+          Удалить
+        </p-button>
+      </td>
     </tr>
   </ng-template>
 </p-table>

@@ -1,0 +1,26 @@
+<form class="form">
+  <div class="form-field">
+    <label for="name">Название</label>
+    <input id="name" [formControl]="form.controls['name']" pInputText />
+  </div>
+  <div class="form-field">
+    <label for="description">Описание</label>
+    <textarea
+      id="description"
+      [formControl]="form.controls['description']"
+      pInputText></textarea>
+  </div>
+  <div class="form-field">
+    <label for="location">Место проведения</label>
+    <input id="location" [formControl]="form.controls['location']" pInputText />
+  </div>
+  <div class="form-field">
+    <label for="participants">Количество участников</label>
+    <p-inputnumber
+      [formControl]="form.controls['participants']"
+      inputId="participants" />
+  </div>
+  <p-button [disabled]="isFormInvalid()" (onClick)="submitForm()">
+    Сохранить
+  </p-button>
+</form>

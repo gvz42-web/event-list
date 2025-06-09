@@ -1,0 +1,18 @@
+<h2>{{ isEdit ? 'Редактировать' : 'Создать' }} событие</h2>
+
+@if (!isEdit) {
+  <p-selectbutton
+    [(ngModel)]="type"
+    [options]="typeOptions"
+    optionLabel="label"
+    optionValue="value"
+    allowEmpty="false"
+    aria-labelledby="basic" />
+}
+
+@if ((event && event.type === 'sport') || (!event && type() === 'sport')) {
+  <evnt-sport-event-form [initialValue]="event" (submit)="close($event)" />
+}
+@if ((event && event.type === 'music') || (!event && type() === 'music')) {
+  <evnt-music-event-form [initialValue]="event" (submit)="close($event)" />
+}

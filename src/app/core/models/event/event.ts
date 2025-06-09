@@ -1,9 +1,11 @@
+export type EventType = 'music' | 'sport';
+
 export interface BaseEvent {
   id: number;
   name: string;
   description: string;
   location: string;
-  type?: 'music' | 'sport';
+  type?: EventType;
 }
 export type BaseEventCreate = Omit<BaseEvent, 'id'>;
 
@@ -20,3 +22,4 @@ export interface MusicEvent extends BaseEvent {
 export type MusicEventCreate = Omit<MusicEvent, 'id'>;
 
 export type EventItem = SportEvent | MusicEvent;
+export type EventItemCreate = SportEventCreate | MusicEventCreate;
